@@ -1,0 +1,22 @@
+Count Open Cases for Each Account
+As a Customer Service Manager,
+I want to see the number of open Cases related to each Account,
+So that I can prioritize which customers need the most support.
+Acceptance Criteria:
+Input: Account ID.
+Output: Open_Case_Count__c field on Account is updated synchronously.
+
+public with sharing class CountOpenCase {
+    public static void openCase(String id){
+        Account a = [SELECT id,Name FROM Account WHERE Id =:id LIMIT 1];
+        List<Case> cs = [SELECT id,status FROM Case WHERE AccountId =:id];
+        Integer count = 0;
+        for(Case c:cs){
+            if(c.Status != 'Closed'){
+                count = count + 1;
+            }
+        }
+        a.NumberOfOpenCase__c = count;
+        update a;
+    }   
+}
