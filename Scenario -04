@@ -1,0 +1,22 @@
+Update Contact Address with Account Address
+As a Salesforce Admin, I want to update all associated Contacts' addresses whenever the Account's address is updated so that the data remains consistent.
+Input- account id,output - get the list of contact related to the account and update the mailing address of te contact with parent account 
+Acceptance Criteria:
+- An Apex trigger or class executes synchronously whenever the Account address fields are updated.
+- All related Contacts' address fields are updated to match the Account's address fields.
+
+public with sharing class ContactUpdate {
+    public static void updateContact(String accId){
+        Account acc = [SELECT Id,BillingAddress FROM Account WHERE Id =: accId];
+        List<Contact> lstOfContact = [SELECT Id,MailingAddress FROM Contact WHERE AccountId =:accId];
+        if(lstOfContact.size() > 0){
+            for(Contact con:lstOfContact){
+                con.MailingCity = acc.BillingCity;
+                con.MailingCountry = acc.BillingCountry;
+                con.MailingState = acc.BillingState;
+                con.MailingPostalCode = acc.BillingPostalCode;
+            }
+            update lstOfContact;
+        }
+    }
+}
