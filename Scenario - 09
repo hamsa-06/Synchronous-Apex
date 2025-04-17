@@ -1,0 +1,21 @@
+ Calculate Total Order Value
+As a Sales Rep, I want a custom button to calculate the total value of all related Order Items for an Order so that I can quickly review order costs.
+Acceptance Criteria:
+- A custom button labeled "Calculate Order Value" is available on the Order page.
+Input- Order id, output - order value (calculate the order item price )
+
+public with sharing class TotalOrder {
+    public static void totalPrice(String orderId){
+        List<OrderItem> lstOfOrderItem = [SELECT quantity,UnitPrice FROM OrderItem WHERE OrderId =: orderId];
+        Decimal TotalPrice = 0;
+        if(lstOfOrderItem.size()>0){
+            for(OrderItem oi:lstOfOrderItem){
+                TotalPrice += oi.quantity * oi.UnitPrice;
+            }
+    
+        }
+        Order ord = [SELECT Id,Total__c FROM Order Where Id =: orderId];
+        ord.Total__c = TotalPrice;
+        update ord;
+    }
+}
