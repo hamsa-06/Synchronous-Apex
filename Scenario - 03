@@ -1,0 +1,18 @@
+Auto-close Case After Resolution
+As a Support Agent,
+I want to automatically set the Status of a Case to "Closed" once the resolution is added,
+So that I can reduce manual steps.
+Acceptance Criteria:
+Input: Case ID with Resolution field filled.
+Output: Status is updated to "Closed" immediately.
+
+public with sharing class CaseResolution {
+    public static void resoltuion(String cn){
+        Case c = [SELECT id,Reason,Priority,Resolution__c FROM Case WHERE CaseNumber =: cn];
+        if(c.Reason == 'Installation' && c.Priority =='Medium'){
+            c.Resolution__c = 'Assigned an Sales rep';
+            c.Status = 'Closed';
+            update c;
+        }
+    }
+}
