@@ -1,0 +1,26 @@
+Send Welcome Email to New Customers
+As a Customer Success Manager, I want an email sent automatically to a customer after their record is created so that they feel welcomed.
+Input - Customer id,Output - Send Hi email
+Acceptance Criteria:
+- When a new Contact record is created, an Apex class runs synchronously to send a **Welcome Email**.
+- The email includes the customer's name and a standard message template.
+
+public with sharing class MailContact {
+    public static void insertRecord(String name,String accountId,String email,String phone){
+        Contact con = new Contact();
+        con.LastName = name;
+        con.AccountId = accountId;
+        con.Email = email;
+        con.Phone = phone;
+        sendMail(email,name);
+        insert con;
+    }
+    public static void sendMail(String email,String name){
+       Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+       String[] toaddresses = new String[] {email}; 
+       mail.setToAddresses(toaddresses);
+       mail.setSubject('Welcome To Our Company');
+       mail.setPlainTextBody('Hello '+name+','+'\n\n'+'Welcome to our company! We Glad To Have You On Board.' +'\n\n'+'Best Regards,'+'\n'+'Hamsa');
+       Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+    }
+}
