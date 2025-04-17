@@ -1,0 +1,26 @@
+Generate Unique Invoice Number
+User Story:
+As an Invoice Manager, I want a unique Invoice Number generated for each new Invoice record so that I can easily identify them.
+Acceptance Criteria:
+- When a new Invoice record is created, an Apex class assigns a unique Invoice Number in the format INV-{YYYYMM}-{0001}.
+- The Invoice Number field is auto-populated and non-editable after creation.
+Input - case record type if it is external auto number should be EXT - 0000, internal auto number be INT - 0000
+
+public with sharing class InvoiceNumber {
+    public static void invoiceNumber(){
+        List<Case> lstExtId = [SELECT RecordTypeId__c,RecordType.DeveloperName from Case];
+        Integer i =0;
+        Integer j = 0;
+        for(Case c : lstExtId){
+            if(c.RecordType.DeveloperName == 'Internal'){
+                c.RecordTypeId__c = 'INT - 0'+i;
+                i++;
+            }
+            else{
+                c.RecordTypeId__c ='EXT - 0'+j;
+                j++;
+            }
+        }
+        update lstExtId;
+    }
+}
