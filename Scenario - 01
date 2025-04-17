@@ -1,0 +1,28 @@
+Convert Lead to Contact with Account
+As a Sales Executive,I want to convert a Lead into a Contact and Account synchronously,So that I can immediately follow up after qualification.
+Acceptance Criteria:
+Input: Lead ID.
+Output: A new Contact and Account are created, and the Lead is marked as Converted.
+
+public with sharing class LeadConverted {
+    public static void leads(String leadId){
+        Lead ld = [SELECT FirstName,LastName,Phone,Status,Email,Company,website,Industry FROM Lead WHERE Id =:leadId];
+        ld.Status = 'Converted';
+        update ld;
+        Account acc = new Account();
+        acc.Name = ld.Company;
+        acc.Phone = ld.Phone;
+        acc.website = ld.website;
+        acc.Type = 'Customer';
+        acc.Industry = ld.Industry;
+        insert acc;
+        Contact con = new Contact();
+        con.FirstName = ld.FirstName;
+        con.LastName = ld.LastName;
+        con.Phone = ld.Phone;
+        con.AccountId = acc.Id;
+        con.Email = ld.Email;
+        insert con;
+        
+    }
+}
