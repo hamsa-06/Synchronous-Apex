@@ -1,0 +1,23 @@
+Create Related Tasks When Opportunity is Won
+As a Sales Rep,
+I want to create a predefined set of follow-up Tasks when an Opportunity is marked as "Closed Won",
+So that I can streamline my process.
+Acceptance Criteria:
+Input: Opportunity ID.
+Output: Three tasks created: Thank You Call, Upsell Opportunity, and Delivery Coordination.
+
+public with sharing class CreateTaskWonOpp {
+    public static void task(){
+        List<Opportunity> opp = [SELECT id,StageName,AccountId FROM Opportunity WHERE StageName =: 'Closed Won'];
+        List<Task> taskList = new List<Task>();
+        for(Opportunity o:opp){
+            if(o.StageName == 'Closed Won'){
+                Task t = new Task();
+                t.Subject = 'Follow up on Closed Won Opportunity';
+                t.WhatId = o.Id;
+                taskList.add(t);
+            }
+        }
+        insert taskList;
+    }
+}
