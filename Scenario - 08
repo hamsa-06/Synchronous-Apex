@@ -1,0 +1,35 @@
+Calculate Discounts on Opportunity
+As a Sales Manager, I want a custom button on the Opportunity page to calculate a discount percentage based on the total opportunity amount so that I can quickly offer deals to clients.
+Acceptance Criteria:
+- A button labeled "Calculate Discount" is available on the Opportunity record.
+- Clicking the button runs an Apex class that calculates the discount:
+- 5% for amounts above $10,000.
+- 10% for amounts above $50,000.
+- The discount is saved in a custom field called Discount__c.
+
+public with sharing class OpportunityDiscount {
+   public static Double calculateDis(Decimal amt){
+        Double amountAfterDiscount = 0;
+        if(amt<10000){
+            amountAfterDiscount = amt;
+        }
+        else if(amt>=10000 && amt<50000){
+            amountAfterDiscount = amt - (amt *0.05);
+        }
+        else if(amt>=50000 && amt<100000){
+            amountAfterDiscount = amt - (amt *0.10);
+        }
+        else if(amt >=100000){
+            amountAfterDiscount = amt - (amt *0.15);
+        }
+        return amountAfterDiscount;
+   }
+   public static void setDiscount(String oppId){
+        Opportunity op = [SELECT Id,Amount,Discount__c FROM Opportunity WHERE Id = : oppId];
+        if(op != null){
+            Double discount = calculateDis(op.Amount);
+            op.Discount__c = discount;
+            update op;
+        }
+   }
+}
