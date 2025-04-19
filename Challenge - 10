@@ -1,0 +1,27 @@
+Update Account Rating Based on Opportunities
+Objects: Opportunity, Account
+Scenario:
+If an Account has more than 3 closed-won opportunities, update the Rating field to "Hot"; if 1-2, "Warm"; else, "Cold".
+
+public with sharing class AccountOpportuntiy {
+    public static void accountRating(String id){
+        Integer count = 0;
+        List<Opportunity> lstOfOpp = [SELECT id,StageName,AccountId FROM Opportunity WHERE AccountID =: Id];
+        Account a = [SELECT id,Name,Rating FROM Account WHERE id =: id];
+        for(Opportunity o : lstOfOpp){
+            if(o.StageName =='Closed Won'){
+                count = count + 1;
+            }
+        }
+        if(count >= 3){
+            a.Rating = 'Hot';
+        }
+        else if (count >= 1 & count <3){
+            a.Rating = 'Warm';
+        }
+        else{
+            a.Rating = 'Cold';
+        }
+        update a;
+    }
+}
